@@ -1,0 +1,8 @@
+*.idea
+.idea
+build.sh
+sftp-config.json
+.idea
+*.idea
+*.DS_Store
+build.sh

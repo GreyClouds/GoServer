@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+package fat;
+
+// 指令号定义
+enum CG {
+    CG_ID_ZERO=0;
+    ID_PING = 1000;                                     // 测试指令[Ping]
+
+    ID_GUEST_LOGIN = 1001;                              // 登录[GuestLogin]
+    ID_MATCH_BEGIN = 1002;                              // 开始寻找比赛
+    ID_MATCH_QUERY = 1003;                              // 查询寻找比赛有没有找到对手[Empty]
+    ID_MATCH_REWARD = 1004;                             // 比赛结算[MatchReward]
+    ID_SIGNIN_VIEW = 1005;                              // 查看当前签到进度[Empty]
+    ID_SIGNIN = 1006;                                   // 签到[SigninForm]
+    ID_NICK_SET = 1007;                                 // 设置昵称[NickSet]
+    ID_ZONE_LIST = 1008;                                // 获取区域列表[Empty]
+    ID_ZONE_SET = 1009;                                 // 设置区域[ZoneSet]
+    ID_MATCH_END = 1010;                                // 取消寻找比赛[MatchEnd]
+    ID_MATCH_REPEAT_STATE = 1011;                       // 查询好友是否再战[MatchRepeat]
+    ID_INVITE_CODE = 1020;                              // 邀请码输入[InviteCodeReq]
+    ID_HEART_BEAT = 1021;                               // 逻辑轮循[Empty]
+    ID_IAP_VERIFY = 1080;                               // IAP校验[IAPVerifyForm]
+    ID_CDKEY_EXCHANGE = 1081;                           // 兑换礼品[CDKey]
+    ID_RANK_BEGIN = 1201;                               // 排位赛匹配[RankBegin]
+    ID_RANK_QUERY = 1202;                               // 排位赛匹配查询[RankQuery]
+    ID_RANK_REWARD = 1203;                              // 排位赛匹配结算[RankReward]
+    ID_RANK_CANCEL = 1204;                              // 排位赛匹配取消[RankCancel]
+    ID_RANK_INFO = 1205;                                // 赛季信息[RankInfo]
+    ID_RANK_SELF = 1206;                                // 自己排位赛信息[RankSelf]
+    ID_RANK_TIERS = 1207;                               // 排位赛等级表[RankTiers]
+    ID_RANK_SEASONREWARD = 1208;                        // 获取赛季奖励[RankSeasonReward]
+    ID_SHOPPING = 1301;                                 // 购买物品[Shopping]
+    ID_SELF_MONEY = 1302;                               // 查询自己的货币余额[SelfMoney]
+    ID_AD_REWARD = 1303;                                // 看广告获取货币奖励[ADReward]
+}
+
+// 协议号定义
+enum GC {
+    GC_ID_ZERO=0;
+    ID_PONG = 1999;                                     // 测试协议[Pong]
+
+    ID_GUEST_LOGIN_RESP = 1998;                         // 登录反馈[GuestLoginResp]
+    ID_MATCH_BEGIN_RESP = 1997;                         // 开始寻找比赛返回[MatchBeginResp]
+    ID_MATCH_QUERY_RESP = 1996;                         // 查询寻找比赛结果返回[MatchQueryResp]
+    ID_MATCH_REWARD_RESP = 1995;                        // 比赛结算返回[MatchRewardResp]
+    ID_SIGNIN_VIEW_RESP = 1994;                         // 当前签到进度[SigninViewResp]
+    ID_SIGNIN_RESP = 1993;                              // 签到返回[SigninResp]
+    ID_NICK_SET_RESP = 1992;                            // 设置昵称结果[NickSetResp]
+    ID_ZONE_LIST_RESP = 1991;                           // 获取可用区域列表[ZoneListResp]
+    ID_ZONE_SET_RESP = 1990;                            // 设置可用区域反馈[ZoneSetResp]
+    ID_MATCH_END_RESP = 1989;                           // 取消寻找比赛[MatchEndResp]
+    ID_MATCH_REPEAT_STATE_RESP = 1988;                  // 查询好友是否再战[MatchRepeatStateResp]
+    ID_INVITE_CODE_RESP = 1979;                         // 邀请码返回[InviteCodeResp]
+    ID_HEART_BEAT_RESP = 1978;                          // 逻辑轮循返回[HeartBeat]
+    ID_IAP_VERIFY_RESP = 1920;                          // IAP校验返回[IAPVerifyResp]
+    ID_CDKEY_EXCHANGE_RESP = 1919;                      // 兑换结果[CDKeyExchangeResp]
+    ID_RANK_BEGIN_RESP = 1799;                          // 排位赛匹配[RankBeginResp]
+    ID_RANK_QUERY_RESP = 1798;                          // 排位赛匹配查询[RankQueryResp]
+    ID_RANK_REWARD_RESP = 1797;                         // 排位赛匹配结算[RankRewardResp]
+    ID_RANK_CANCEL_RESP = 1796;                         // 排位赛匹配取消[RankCancelResp]
+    ID_RANK_INFO_RESP = 1795;                           // 赛季信息返回[RankInfoResp]
+    ID_RANK_SELF_RESP  = 1794;                          // 自己排位赛信息[RankSelfResp]
+    ID_RANK_TIERS_RESP  = 1793;                         // 排位赛等级表[RankTiersResp]
+    ID_RANK_SEASONREWARD_RESP = 1792;                   // 获取赛季奖励返回[RankSeasonRewardResp]
+    ID_SHOPPING_RESP = 1699;                            // 货币兑换返回[ShoppingResp]
+    ID_SELF_MONEY_RESP = 1698;                          // 查询自己的货币[SelfMoneyResp]
+    ID_AD_REWARD_RESP = 1697;                           // 看广告获取货币奖励[ADRewardResp]
+}

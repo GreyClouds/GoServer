@@ -1,0 +1,136 @@
+syntax = "proto3";
+//import public "go/fat2.proto";
+option optimize_for = LITE_RUNTIME;
+option csharp_namespace="ProjZombie";
+package hero;
+
+
+// 指令号定义
+enum CG {
+    ID_ZERO_CG =0;
+    ID_GUEST_LOGIN = 2001;                              // 登录[Login]
+    ID_GUEST_REGISTER = 2002;                              // 注册并登录[GuestRegister]
+    ID_GET_ACHIEVEMENT = 2003;                              // 获取某个成就的信息 [GetAchievement]
+    ID_SET_ACHIEVEMENT = 2004;                              // 设置某个成就的信息[SetAchievement]
+    ID_GET_ARENA_RANK = 2005;                             // 获取车间战斗某个玩家排名[Empty]
+    ID_GET_LEARDERBOARD_RANGE = 2006;                              // 获取某个区域[start, end}排行榜信息[GetLearderboardRange]
+    ID_UPDATE_LEARD_SCORE = 2007;                                   // 更新排行榜分数[UpdateLearderBoardScore]
+    ID_UNLOCK_ACHIEVEMENT = 2008;                                   // 解锁成就，现在实际上是需要记录成就解锁的时间[UnLockAchievement]
+    ID_GET_UNLOCK_ACHIEVEDATE = 2009;                                   // 获取成就解锁的时间[GetUnLockAchieveDate]
+}
+
+// 协议号定义
+enum GC {
+    ID_ZERO_GC =0;
+    ID_GUEST_LOGIN_RESP = 2998;                         // 登录反馈[LoginResp]
+    ID_GET_ACHIEVEMENT_RESP = 2997;                         // 获取已经解锁的成就返回[GetAchievementResp]
+    ID_SET_ACHIEVEMENT_RESP = 2996;                        //[Empty]
+    ID_GET_ARENA_RANK_RESP = 2995;                        // 获取车间战斗某个玩家排名返回 [GetArenaLearderboardRankResp]
+    ID_GET_LEARDERBOARD_RANGE_RESP = 2994;                         // 获取某个区域[start, end}排行榜信息返回[GetLearderboardRangeResp]
+    ID_UPDATE_LEARD_SCOREE_RESP = 2993;                              // 更新排行榜分数返回 新的当前排名【UpdateLearderBoardScoreResp】
+    ID_UNLOCK_ACHIEVEMENT_RESP = 2992;                              // 解锁成就 返回 日期 [UnLockAchievementResp]
+    ID_GET_UNLOCK_ACHIEVEDATE_RESP = 2991;                              // 成就的解锁时间 [GetUnLockAchieveDateResp]
+}
+
+message Empty{
+    
+}
+
+message Error {
+       int32 code = 1;                          // 错误代码
+       repeated string args = 2;                            // 附加参数
+}
+
+
+message Login {
+     string imei = 1;                           // 设备号
+     string client_version = 2;                 // 客户端版本号 
+     string channel = 3;                        // 渠道编号[6位数字]
+     string fysdk_token = 4;                    // FYSDK的token字段
+     string fysdk_uuid = 5;                     // FYSDK的uuid字段
+     string nickName = 6;                       // 玩家名称
+}
+
+message GuestRegister {
+     string account = 1;                           // 账号
+     string name = 2;                        // 名称
+}
+
+message LoginResp {
+      Error err = 1;                             // 是否出错
+      uint32 uid = 2;                            // 角色编号
+      bytes token = 3;                           // 访问令牌
+      uint32 arenaScore = 4;               // 车间战斗分数
+      uint32 arenaRank = 5;                      //车间战斗排名
+      uint64 challengeScore = 6;               // 特殊挑战分数
+      uint32 challengeRank = 7;                      //特殊挑战排名排名
+      VersionUpdateAlert update = 8;             // 版本更新提醒
+}
+
+// 版本更新提醒
+message VersionUpdateAlert {
+     bool force = 1;                            // 是否强制更新
+     string version = 2;                        // 新版本
+     string link = 3;                           // 下载链接
+}
+
+message GetAchievement {
+     string name = 1;                        // 名称
+}
+
+message SetAchievement {
+     string name = 1;                        // 名称
+     int32 nowValue = 2;
+}
+
+message GetAchievementResp {
+     int32 value = 1;                        // 当前次数
+}
+
+
+message GetArenaLearderboardRankResp {
+     uint32 rank = 1;                        // 排名
+}
+
+message GetLearderboardRange {
+     string name = 1;                       //排行榜名称
+     uint32 start = 2;                        // 起始排名
+     uint32 end = 3;                        // 最终排名
+}
+
+message LearderboardInfo {
+     int32 score = 1;                        // 分数
+     uint32 rank = 2;                        // 排名
+     string name =3;                        //名字
+}
+
+message GetLearderboardRangeResp {
+     uint32 count = 1;                        // 条目数量
+     repeated LearderboardInfo infos = 2;    //具体信息
+}
+
+message UpdateLearderBoardScore {
+     string name =2;                        //排行榜名称
+     uint64 score = 1;                        // 新的分数
+}
+
+message UpdateLearderBoardScoreResp {
+     uint32 newRank = 1;                        // 新的排名
+     bool success = 2;                      //替换是否成功
+}
+
+message UnLockAchievement {
+    string name = 1;                        // 成就名称
+}
+
+message UnLockAchievementResp {
+    string date = 1;                        // 日期
+}
+
+message GetUnLockAchieveDate {
+    string name = 1;                        // 成就名称
+}
+
+message GetUnLockAchieveDateResp {
+    string date = 1;                        // 成就解锁时间
+}

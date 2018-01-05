@@ -1,0 +1,403 @@
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+package fat;
+
+message Empty {}
+
+message Error {
+	 int32 code = 1;							// 错误代码
+	repeated string args = 2;							// 附加参数
+}
+
+message Ping {
+	 fixed32 sample = 1;						// 时间样本值(以毫秒为单位，取二进制表示的后32位)
+}
+
+message Pong {
+	 fixed32 sample = 1;						// 时间样本值(原值返回)
+	 fixed32 delay = 2;							// 服务端补时(毫秒)
+}
+
+message Resource {
+     int32 id = 1;                              // 资源编号
+     int32 value = 2;                           // 数量
+}
+
+// 使用皮肤胜场进度
+message SkinWinData{
+     int32 skin_id = 1;                         // 皮肤ID
+     int32 win_num = 2;                         // 使用该皮肤ID胜场
+} 
+
+// 活动信息
+message Activity {
+     int32 act_id = 1;                          // 活动ID
+     int32 end_time = 3;                        // 活动结束时间
+    repeated SkinWinData skin_win_data = 2;             // 皮肤胜场进度
+}
+
+message Profile {
+     string nick = 1;                           // 昵称
+    repeated int32 skins = 2;                           // 皮肤列表
+     bool newbie = 3;                           // 是否新账号
+     int32 win = 4;                             // 胜场
+     bool remove_ad = 5;                        // 是否屏蔽广告
+    repeated Activity activity = 7;                     // 活动
+     bool ad_reward = 8;                        // 是否存在广告观看奖励
+     int32 remain_ad_reward_sec = 9;            // 距离下一次观看广告获得奖励剩余秒数
+     int32 win_reward_num = 10;                 // 胜场奖励的胜场数
+     int32 win_reward_count = 11;               // 胜场奖励的剩余领取次数
+}
+
+// 版本更新提醒
+message VersionUpdateAlert {
+     bool force = 1;                            // 是否强制更新
+     string version = 2;                        // 新版本
+     string link = 3;                           // 下载链接
+}
+
+message Announcement {
+     bool force = 1;                            // 是否强制弹窗
+     string url = 2;                            // 图片地址
+     string link = 3;                           // 外部链接
+}
+
+message InviteCodeReq {
+     string invite_code = 1;                    // 邀请码
+}
+
+message InviteCodeResp {
+     Error err = 1;                             // 是否出错
+}
+
+// 设备号登陆
+message GuestLogin {
+     string imei = 1;                           // 设备号
+     int32 os = 2;                              // 操作系统(0:未知, 1:iOS, 2:Android)
+     string client_version = 3;                 // 客户端版本号 
+     string channel = 4;                        // 渠道编号[6位数字]
+     int32 language = 5;                        // 语言编码[1:简体中文,2:繁体中文,3:英文]
+     string fysdk_token = 6;                    // FYSDK的token字段
+     string fysdk_uuid = 7;                     // FYSDK的uuid字段
+}
+
+message Tiers {
+     int32 tiers = 1;                           // 段位
+     int32 grading = 2;                         // 阶位
+     int32 star = 3;                            // 星星
+     int32 rank = 4;                            // 排名 <=0: 未进入排名  >0:名次
+}
+
+message Money {
+     int32 gold = 1;                            // 金币
+     int32 diamond = 2;                         // 钻石
+     bool first_recharge = 3;                   // 是否首充
+}
+
+// 游客登录反馈
+message GuestLoginResp {
+     Error err = 1;                             // 是否出错
+     uint32 uid = 2;                            // 角色编号
+     bytes token = 3;                           // 访问令牌
+     Profile profile = 4;                       // 角色数据
+     VersionUpdateAlert update = 5;             // 版本更新提醒
+    repeated Announcement announcements = 6;            // 公告
+     Tiers tiers = 7;                           // 排位
+     Money money = 8;                           // 钱财
+     bool need_invitation_code = 9;             // 是否需要邀请码
+}
+
+message NickSet {
+     string nick = 1;                           // 昵称
+     uint32 lang = 2;                           // 语言区域[0:其它,1:简体中文,2:繁体中文,3:英文]
+}
+
+message NickSetResp {
+     Error err = 1;                             // 结果
+}
+
+message MatchBegin {
+     int32 skin = 1;                            // 使用的皮肤编号
+     int32 lag = 2;                             // 延迟数据
+     int32 room_code = 3;                       // 房间密码(大于0的四位数字),好友定向匹配使用
+     bool is_again = 4;                         // 是否为重玩
+}
+
+message MatchBeginResp {
+     Error err = 2;                             // 结果反馈
+     int32 friend_status = 1;                   // 0:还在确定, 1: 不再战, 2:再战
+}
+
+message MatchQuery {}
+
+message MatchQueryResp {
+     int32 status = 1;                          // 0:还在找, 1: 真的找不到, 2:找到了
+     int32 my_position = 2;                     // 位置 1:接受者在左边 2:接受者右边
+     uint32 room_id = 3;                        // 房间编号
+     string name = 4;                           // 对手的名字
+     uint32 opponent_uid = 5;                   // 对手uid
+     int32 win = 6;                             // 对手的胜场
+     int32 skin = 7;                            // 对手的外观编号
+     int32 mainVice = 8;                        // 是不是指定当主机 1: 是主机, 2: 不是主机
+     int32 vs_ai = 9;                           // 是否打机器人(0: 非机器人, [1,10]:机器人等级)
+}
+
+message OpponentInfo {
+     string name = 1;                           // 对手的名字
+     uint32 opponent_uid = 2;                   // 对手uid
+     int32 win = 3;                             // 对手的胜场
+     int32 skin = 4;                            // 对手的外观编号
+}
+
+message MatchMemberDetail {
+     uint32 uid = 1;                            // 角色编号
+     int32 hp = 2;                              // 当前血量
+}
+
+message MatchReward {
+     uint32 room_id = 1;                        // 房间编号
+     int32 result = 2;                          // 战斗结果(0:平局, 1:胜利, 2:失败)
+    repeated MatchMemberDetail details = 3;             // 成员信息列表
+     int32 vs_ai = 4;                           // 对手机器人强度(0: 非机器人, [1,10]:机器人强度)
+}
+
+message MatchTaskReward {
+     int32 id = 1;                              // 任务编号
+    repeated Resource resources = 2;                    // 获得资源 
+}
+
+message MatchRewardResp {
+     Error err = 1;                             // 是否出错
+     int32 win = 2;                             // 目前的胜场
+    repeated MatchTaskReward tasks = 3;                 // 胜场任务奖励
+     SkinWinData skin_win_data = 4;             // 七夕皮肤胜场进度
+     Money money = 5;                           // 最新货币信息
+     int32 winRewardNum = 6;                    // 胜场奖励的胜场数
+     int32 win_reward_count = 7;                // 胜场奖励的剩余领取次数
+}
+
+// ---------------------------------------------------------------------------
+
+message SigninViewResp {
+     Error err = 1;                             // 是否出错
+     int32 id = 2;                              // 下一次可签到的任务编号
+     int32 sec = 3;                             // 下一次可签到的剩余秒数
+}
+
+message SigninForm {
+     int32 id = 1;                              // 签到任务编号
+}
+
+message SigninResp {
+     Error err = 1;                             // 是否出错
+     int32 id = 2;                              // 任务编号
+     int32 next_id = 3;                         // 下一次可签到的任务编号
+     int32 next_sec = 4;                        // 下一次可签到的剩余秒数
+    repeated Resource resources = 5;                    // 获得资源
+}
+
+// ---------------------------------------------------------------------------
+
+message ZoneListResp {
+     Error err = 1;                             // 错误
+    repeated string ids = 2;                            // 编号列表
+    repeated string addrs = 3;                          // IP地址
+}
+
+message ZoneSet {
+     string id = 1;                             // 区域编号
+}
+
+message ZoneSetResp {
+     Error err = 1;                             // 错误
+}
+
+// ---------------------------------------------------------------------------
+
+// IAP支付验证表单
+message IAPVerifyForm {
+     string receipt = 1;                        // 校验字符串
+}
+
+message IAPVerifyResp {
+     Error err = 1;                             // 错误
+     uint32 id = 2;                             // 订单编号
+    repeated Resource resources = 3;                    // 获得资源
+     bool remove_ad = 4;                        // 是否移除广告
+     Money money = 5;                           // 当前财富
+}
+
+// ---------------------------------------------------------------------------
+
+// 是否对方有请求再战
+message MatchRepeatState {
+     uint32 room_code = 1;                      // 房间密码
+}
+
+message MatchRepeatStateResp {
+     int32 status = 1;                          // 0:还在确定, 1: 不再战, 2:再战
+}
+
+// 取消寻找比赛,或拒绝再战
+message MatchEnd {
+     uint32 room_code = 1;                      // 房间密码      
+}
+
+message MatchEndResp {
+     Error err = 1;                             // 错误
+}
+
+//开始排位匹配
+message RankBegin {
+     int32 skin = 1;                            // 使用的皮肤编号
+}
+
+message RankBeginResp {
+     int32 status = 1;                          // 0:成功 1:未开放排位 2:未拥有皮肤 3:未取得排位资格 4:禁赛
+     int32 suspend = 2;                         // 禁赛时间
+}
+
+// 查询排位匹配结果
+message RankQuery {
+}
+
+message RankQueryResp {
+     int32 status = 1;                          // 0:还在找, 1: 真的找不到, 2:找到了
+     uint32 room_id = 2;                        // 对战房间ID,房间内玩家相同
+     bool main_engine = 3;                      // 主机
+     bool left = 4;                             // 位置居左
+     RankUser rival = 5;                        // 对手信息
+     uint32 room_uid = 6;                       // 房间记录唯一标准,用于结算比赛结果,房间内玩家唯一拥有
+}
+
+message RankUser {
+     Tiers tiers = 1;                           // 对手排位信息
+     uint32 uid = 2;                            // 对手UID
+     string nick = 3;                           // 对手昵称
+     int32 skin = 4;                            // 对手的外观编号
+}
+
+// 排位比赛结果
+message RankReward {
+     uint32 room_uid = 1;                       // 房间记录唯一标准,通过[RankQueryResp]获取
+     int64 result = 2;                          // 战斗结果(1:平局, 2:胜利, 3:失败)
+}
+
+message RankRewardResp {
+     bool ok = 1;
+     Tiers tiers = 2;                           // 段位
+    repeated MatchTaskReward tasks = 3;                 // 胜场任务奖励
+     SkinWinData skin_win_data = 4;             // 活动皮肤胜场进度
+     int32 win = 5;                             // 目前的胜场
+     Money money = 6;                           // 最新货币信息
+     int32 winRewardNum = 7;                    // 胜场奖励的胜场数
+     int32 win_reward_count = 8;                // 胜场奖励的剩余领取次数
+}
+
+//排位匹配队列取消
+message RankCancel{
+}
+
+message RankCancelResp{
+     bool ok = 1;                               // 成功
+}
+
+//排位赛季信息
+message RankInfo{}
+
+message Reward {
+     int32 id = 1;                              // 奖品id
+     int32 num = 2;                             // 奖品数量
+}
+
+message RankInfoResp{
+     int32 status = 1;                          // 状态 0:正常 1:关闭 2:结算 3:结算前冻结
+     int32 season = 2;                          // 第几赛季
+     int32 end_time = 3;                        // 赛季结束时间戳(秒)
+    repeated Reward reward = 4;                         // 当前段位赛季奖励
+}
+
+//获取自己的排位等级信息
+message RankSelf {}
+
+message CombatGains{
+     int32 win = 1;                             // 胜场
+     int32 lose = 2;                            // 败场
+     int32 draw = 3;                            // 平局
+}
+
+message RankSelfResp {
+     bool ok = 1;                               // 成功
+     Tiers tiers = 2;                           // 段位信息
+     CombatGains gains = 3;                     // 战绩
+}
+
+//获取排位段位表
+message RankTiers{}
+
+message RankTiersResp{
+     string table_json = 1;                     // json格式排位段位信息表
+}
+
+//获取赛季奖励
+message RankSeasonReward {
+}
+
+message SeasonReward {
+     Tiers tiers = 1;                           // 段位信息
+    repeated Reward reward = 2;                         // 当前段位赛季奖励
+     int32 season = 3;                          // 赛季
+}
+
+message RankSeasonRewardResp {
+     bool ok = 1;                               // 成功
+    repeated SeasonReward reward = 3;                   // 当前段位赛季奖励
+}
+
+//购买商品
+message Shopping {
+     int32 id = 1;                              // 售卖id
+}
+
+message ShoppingResp {
+     int32 error_code = 1;                      // 0:成功 1:非法id 2:余额不足
+     Money money = 2;                           // 最新的货币数量
+}
+
+//查询自己的货币
+message SelfMoney{}
+
+message SelfMoneyResp{
+     Money money = 1;
+}
+
+//看广告获取货币奖励
+message ADReward {}
+message AdRewardResp {
+     int32 error_code = 1;                      // 0:成功 1:奖励CD中 2:已达每日上限
+     Money money = 2;                           // 最新的货币数量
+     bool ad_reward = 3;                        // 是否存在广告观看奖励
+     int32 remain_t = 4;                        // 距离下次可领取奖励还剩几秒
+}
+
+message CDKey {
+     string id = 1;                             // 兑换码
+}
+
+message CDKeyExchangeResp {
+     Error err = 1;                             // 兑换是否成功
+    repeated Resource resources = 2;                    // 兑换资源
+}
+
+// 安卓支付订单通知
+message PaymentNotify {
+     string id = 1;                             // 订单编号
+    repeated Resource resources = 2;                    // 获得资源
+     bool remove_ad = 3;                        // 是否移除广告
+     Money money = 4;                           // 当前财富
+}
+
+message HeartBeat {
+     Error err = 1;                             // 兑换是否成功
+    repeated PaymentNotify payments = 2;                // 支付订单通知
+}

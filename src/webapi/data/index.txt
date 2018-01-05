@@ -1,0 +1,27 @@
+全局配置,全局配置,GlobalOthers
+全局配置,分区表,GlobalZones
+函数表,f1,FunctionF1
+函数表,f2,FunctionF2
+函数表,f3,FunctionF3
+外围配置,角色,Prop
+外围配置,胜场任务,MatchTask
+外围配置,签到任务,SigninTask
+外围配置,App Store,SKU
+外围配置,活动,Activity
+对战匹配,初始分测试,InitRobotLvs
+对战匹配,AI与分数,AItoScore
+对战匹配,分数与AI,ScoretoAI
+对战匹配,机器人名字,RobotName
+对战匹配,竞等与AI皮肤,ScoretoAISkin
+版本更新,最新版本,VersionUpdateAlert
+
+对战匹配,竞技场,Rank
+函数表,RankTiers,RankTiers
+函数表,RankGroup,RankGroup
+函数表,RankMatchExtend,RankMatchExtend
+函数表,RankCheatJudge,RankCheatJudge
+函数表,RankForbid,RankForbid
+对战匹配,赛季配置,RankSeasonConfig
+外围配置,商品,Commodity
+分包渠道,Sheet1,Channel
+内购信息,Sheet1,AndroidIAP

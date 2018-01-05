@@ -1,0 +1,17 @@
+.DS_Store
+__pycache__
+.idea
+editor2
+
+~$*.*
+
+.ipynb_checkpoints
+
+*.xlsx#
+*.aux
+*.log
+*.synctex.gz
+*.toc
+*.out
+
+sftp-config.json

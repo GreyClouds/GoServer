@@ -1,0 +1,22 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  only:
+    - master
+  script:
+    - set -e
+    - chmod +x editor
+    - ./editor
+    - rm -rf /data/deadfat/data/*
+    - cp -rf json/* /data/deadfat/data/
+
+deploy:
+  stage: deploy
+  only:
+    - master
+  script:
+    - CIDS=`docker ps -q -f='name=fat-webapi'`
+    - if [[ -n $CIDS ]]; then docker restart $CIDS; fi

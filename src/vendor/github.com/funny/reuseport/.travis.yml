@@ -1,0 +1,27 @@
+sudo: false
+group: edge
+
+language: go
+
+go:
+  - 1.6
+  - 1.7
+  - tip
+
+os:
+  - linux
+  - osx
+
+before_install:
+  - uname -a
+
+script:
+  - go test -v ./...
+  - go test -v -benchmem -benchtime=5s -bench=. -coverprofile=coverage.txt -covermode=atomic
+
+matrix:
+  allow_failures:
+    - go: tip
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
