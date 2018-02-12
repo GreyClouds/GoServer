@@ -1,5 +1,5 @@
 [{"ChannelID":"100000","ChannelName":"AppStore","SignName":"AppStore","IsCDKey":false,"LoginMode":1,"Comment":"http://www.crazyant.com/"},
-	{"ChannelID":"000000","ChannelName":"tap","SignName":"feiyu","IsCDKey":false,"LoginMode":2,"Comment":"http://www.crazyant.com/"},
+	{"ChannelID":"000000","ChannelName":"tap","SignName":"feiyu","IsCDKey":false,"LoginMode":3,"Comment":"http://www.crazyant.com/"},
 	{"ChannelID":"000001","ChannelName":"oppo","SignName":"oppo","IsCDKey":false,"LoginMode":2,"Comment":"http://www.crazyant.com/"},
 	{"ChannelID":"000002","ChannelName":"vivo","SignName":"vivo","IsCDKey":false,"LoginMode":3,"Comment":"http://www.crazyant.com/"},
 	{"ChannelID":"000003","ChannelName":"应用宝","SignName":"yingyongbao","IsCDKey":false,"LoginMode":2,"Comment":"http://www.crazyant.com/"},

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"time"
+	"math/rand"
 
 	"github.com/golang/protobuf/proto"
 
@@ -106,11 +107,14 @@ func HandleGuestLogin(skeleton *oskeleton.Skeleton, session *osession.Session, _
 	var uid uint32
 	if err != nil {
 		//没有注册过的账号，注册
-		if uid = pCache.GenID("uid", 4); uid == 0 {
+		if uid = pCache.GenID("uid", 1); uid == 0 {
 			log.Printf("生成角色编号失败: %d", accountStr)
 			resp.Err = doHeroError(kInternelServerError)
 			return nil, uint16(pbd.GC_ID_GUEST_LOGIN_RESP), resp
 		} else {
+			if nickName == ""{
+				nickName = fmt.Sprintf("%s%05d","英雄", rand.Intn(99999));
+			}
 			if err := obean.RegisterAccount(accountStr, nickName, uid); err != nil {
 				log.Printf("插入新角色%d账号数据时出错: %v", uid, err)
 				resp.Err = doHeroError(kInternelServerError)
@@ -124,7 +128,9 @@ func HandleGuestLogin(skeleton *oskeleton.Skeleton, session *osession.Session, _
 		}
 	}else{
 		uid = account.Uid
-		obean.SetNickName(nickName, uid)
+		if nickName != "" {
+			obean.SetNickName(nickName, uid)
+		}
 		resp.Uid = uid
 		resp.ArenaScore =obean.GetScore(uid)
 		resp.ArenaRank = obean.GetRank(uid)

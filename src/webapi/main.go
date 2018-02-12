@@ -38,5 +38,5 @@ func main() {
 	//skeleton.Register(true, uint16(pbd.CG_ID_AD_REWARD), nil, ohandlers.HandleAdReward)
 	skeleton.RegisterDBModel()
 	skeleton.Serve()
-
+	rand.NewSource(time.Now().Unix())
 }

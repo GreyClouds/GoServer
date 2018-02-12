@@ -23,7 +23,7 @@ func (self *AchievementAttr) TableName() string {
 
 // ---------------------------------------------------------------------------
 func GetAchievement(uid uint32, name string) int32 {
-	achieveKey := fmt.Sprintf("%s%s", name, uid);
+	achieveKey := fmt.Sprintf("%s%d", name, uid);
 	var achievement =  AchievementAttr{AchieveName:achieveKey}
 	err := defaultOrm.Read(&achievement)
 	if err == nil{
@@ -36,13 +36,24 @@ func GetAchievement(uid uint32, name string) int32 {
 }
 
 func SetAchievement(uid uint32, name string, value int32) {
-	achieveKey := fmt.Sprintf("%s%s", name, uid);
-	var achievement =  AchievementAttr{AchieveName:achieveKey, AchieveValue:value}
-	defaultOrm.InsertOrUpdate(&achievement)
+	achieveKey := fmt.Sprintf("%s%d", name, uid);
+	var achievement =  AchievementAttr{AchieveName:achieveKey}
+	err := defaultOrm.Read(&achievement)
+	if err == nil{
+		if achievement.AchieveValue < value{
+			achievement.AchieveValue = value;
+			defaultOrm.Update(&achievement);
+		}
+	}else if(err == orm.ErrNoRows){
+		achievement.AchieveValue = value;
+		defaultOrm.Insert(&achievement);
+	}else{
+
+	}
 }
 
 func UnLockAchievement(uid uint32, name string) string{
-	achieveKey := fmt.Sprintf("%s%s", name, uid);
+	achieveKey := fmt.Sprintf("%s%d", name, uid);
 	timestamp := time.Now().Unix()
 	tm := time.Unix(timestamp, 0);
 	dateString := tm.Format("2006/01/02")
@@ -52,7 +63,7 @@ func UnLockAchievement(uid uint32, name string) string{
 }
 
 func GetUnLockAchieveDate(uid uint32, name string) string {
-	achieveKey := fmt.Sprintf("%s%s", name, uid);
+	achieveKey := fmt.Sprintf("%s%d", name, uid);
 	var achievement =  AchievementUnLock{AchieveName:achieveKey}
 	err := defaultOrm.Read(&achievement)
 	if err == nil{

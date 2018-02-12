@@ -17,16 +17,17 @@ import (
 	oweb "yunjing.me/phoenix/go-phoenix/web"
 
 	oaccount "webapi/account"
-	pkgActivity "webapi/activity"
+	//pkgActivity "webapi/activity"
 	obean "webapi/bean"
 	pkgGMHandler "webapi/cmds/gm"
 	pkgOtherHandler "webapi/cmds/other"
-	. "webapi/common"
+	//. "webapi/common"
 	oconf "webapi/config"
 	FYSDK "webapi/fysdk"
 	osession "webapi/session"
 	pkgTrace "webapi/trace"
 	//"webapi/wordstock"
+	"webapi/wordstock"
 )
 
 type Skeleton struct {
@@ -76,7 +77,7 @@ func New() *Skeleton {
 		phoenix.EnableCollector(),
 		phoenix.Action(func(c *cli.Context) {
 			oconf.Singleton().Preload(odisconf.New(c.String("static_data")))
-			//wordstock.Configurate(c.String("dirty_word"))
+			wordstock.Configurate(c.String("dirty_word"))
 		}),
 		phoenix.BeforeStart(self.OnPreload),
 		phoenix.AfterStop(self.OnServerClose),
@@ -100,12 +101,12 @@ func (self *Skeleton) Register(audit bool, id uint16, prototype proto.Message, h
 }
 
 func (self *Skeleton) doBeanPreload() {
-	obean.PreloadAccount()
-	obean.PreloadAnnouncement()
+	//obean.PreloadAccount()
+	//obean.PreloadAnnouncement()
 
 	obean.DefaultORM()
-	obean.DefaultKeeper().Run()
-	oaccount.DefaultRankList().Load()
+	//obean.DefaultKeeper().Run()
+	//oaccount.DefaultRankList().Load()
 	obean.ArenaLeaBoardLoadAndSort();
 	obean.ChallLeaBoardLoadAndSort();
 
@@ -114,41 +115,35 @@ func (self *Skeleton) doBeanPreload() {
 func (self *Skeleton) OnPreload() error {
 	self.doBeanPreload()
 
-	pkgActivity.DefaultActivityManager.Preload(oconf.Singleton().GetActivityList())
+	//pkgActivity.DefaultActivityManager.Preload(oconf.Singleton().GetActivityList())
 
 	// 处理真实秒心跳
-	go func() {
-		t := time.NewTicker(time.Second)
-		for {
-			select {
-			case <-t.C:
-				self.OnSecondTick()
-			}
-		}
-	}()
+	//go func() {
+	//	t := time.NewTicker(time.Second)
+	//	for {
+	//		select {
+	//		case <-t.C:
+	//			self.OnSecondTick()
+	//		}
+	//	}
+	//}()
 
 	// 处理空闲协程
-	go func() {
-		t1 := ZeroAclock().Add(3 * time.Hour)
-		time.AfterFunc(t1.Sub(time.Now()), func() {
-			for {
-				self.OnIdle()
-				time.Sleep(24 * time.Hour)
-			}
-		})
-	}()
+	//go func() {
+	//	t1 := ZeroAclock().Add(3 * time.Hour)
+	//	time.AfterFunc(t1.Sub(time.Now()), func() {
+	//		for {
+	//			self.OnIdle()
+	//			time.Sleep(24 * time.Hour)
+	//		}
+	//	})
+	//}()
 
 	return nil
 }
 
 func (self *Skeleton) RegisterDBModel() *Skeleton {
-	orm.RegisterModel(&obean.Account{}, &obean.Character{}, &obean.Skin{},
-		&obean.Payment{}, &obean.BattleRoom{}, &obean.BattleResult{}, &obean.SkinTask{},
-		&obean.Rank{}, &obean.RankHistory{}, &obean.RankReward{}, &obean.RankRewardItem{},
-		&obean.RankRoom{}, &obean.RankList{}, &obean.Announcement{}, &obean.WinReward{},
-		&obean.AdReward{}, &obean.Money{}, &obean.InviteCode{},
-		&obean.CDKey{}, &obean.CDKeyGift{}, &obean.AndroidPayment{}, &obean.Notify{},
-		&obean.Balance{},&obean.AchievementAttr{},&obean.AchievementUnLock{},&obean.ArenaLeaderboard{},
+	orm.RegisterModel(&obean.AchievementAttr{},&obean.AchievementUnLock{},&obean.ArenaLeaderboard{},
 		&obean.ChallLeaderboard{}, &obean.SimAccount{}, &obean.SimRole{},
 	)
 
@@ -225,8 +220,8 @@ func (self *Skeleton) OnServerClose() error {
 	log.Println("服务关闭准备...")
 
 	if atomic.CompareAndSwapInt32(&self.closeFlag, 0, 1) {
-		self.pAccountManager.BGSave()
-		obean.DefaultKeeper().Close()
+		//self.pAccountManager.BGSave()
+		//obean.DefaultKeeper().Close()
 	}
 
 	log.Println("服务准备优雅关闭")
